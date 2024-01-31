@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-...your-sha-hash-here..." crossorigin="anonymous" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        #taskInput {
+            width: 70%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        #addTaskBtn {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .task {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .task span {
+            margin-right: 10px;
+        }
+
+        .editBtn, .deleteBtn {
+            cursor: pointer;
+            padding: 4px 8px;
+            margin-right: 5px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #555;
+        }
+
+        @media (min-width: 600px) {
+            #taskInput {
+                width: 70%;
+            }
+
+            #addTaskBtn {
+                width: auto;
+            }
+
+            .task {
+                flex-wrap: nowrap;
+            }
+
+            .task span {
+                width: auto;
+                margin-bottom: 0;
+            }
+
+            .editBtn, .deleteBtn {
+                width: auto;
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <div>
+        <input type="text" id="taskInput" placeholder="Enter task...">
+        <button id="addTaskBtn" onclick="addTask()">Add Task</button>
+    </div>
+    <div id="taskList"></div>
+    <div>
+        <p>Total tasks: <span id="taskCount">0</span></p>
+    </div>
+
+    <script>
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            const taskCount = document.getElementById('taskCount');
+
+            if (taskInput.value.trim() !== "") {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task';
+                taskItem.innerHTML = `
+                    <input type="checkbox" onchange="toggleCompleted(this)"> Completed
+                    <span>${taskInput.value}</span>
+                    <span class="editBtn" onclick="editTask(this.parentElement)"><i class="fas fa-edit"></i></span>
+                    <span class="deleteBtn" onclick="deleteTask(this)"><i class="fas fa-trash-alt"></i></span>
+                `;
+                taskList.appendChild(taskItem);
+                taskInput.value = "";
+
+                updateTaskCount();
+            }
+        }
+
+        function editTask(taskItem) {
+            const taskTextElement = taskItem.querySelector('span');
+            const taskText = taskTextElement.innerText;
+            const newText = prompt('Edit task:', taskText);
+
+            if (newText !== null && newText.trim() !== "") {
+                taskTextElement.innerText = newText;
+            }
+        }
+
+        function deleteTask(deleteBtn) {
+            const taskItem = deleteBtn.parentElement;
+            if (!taskItem.classList.contains('completed')) {
+                taskItem.remove();
+            }
+            updateTaskCount();
+        }
+
+        function toggleCompleted(checkbox) {
+            const taskItem = checkbox.parentElement;
+            taskItem.classList.toggle('completed');
+        }
+
+        function updateTaskCount() {
+            const taskCount = document.getElementById('taskCount');
+            const tasks = document.querySelectorAll('.task');
+            taskCount.innerText = tasks.length;
+        }
+    </script>
+</body>
+</html>
